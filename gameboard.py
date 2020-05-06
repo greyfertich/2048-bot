@@ -12,54 +12,52 @@ class GameBoard:
 
     def simulateMove(self, direction):
         if direction == LEFT:
-            self.simulateMoveLeft()
+            sim = self.simulateMoveLeft()
         if direction == RIGHT:
-            self.simulateMoveRight()
+            sim = self.simulateMoveRight()
         if direction == UP:
-            self.simulateMoveUp()
+            sim = self.simulateMoveUp()
         if direction == DOWN:
-            self.simulateMoveDown()
-        return self.grid
+            sim = self.simulateMoveDown()
+        return sim
 
     def simulateMoveLeft(self):
-        self.makeMove()
+        return self.makeMove(self.grid)
 
     def simulateMoveRight(self):
-        self.flipHorizontally()
-        self.makeMove()
-        self.flipHorizontally()
+        return self.flipY(self.makeMove(self.flipY(self.grid)))
 
     def simulateMoveUp(self):
-        self.transpose()
-        self.makeMove()
-        self.transpose()
+        return self.T(self.makeMove(self.T(self.grid)))
 
     def simulateMoveDown(self):
-        self.transpose()
-        self.flipHorizontally()
-        self.makeMove()
-        self.flipHorizontally()
-        self.transpose()
+        return self.T(self.flipY(self.makeMove(self.flipY(self.T(self.grid)))))
 
-    def makeMove(self):
+    def makeMove(self, grid):
         newGrid = []
         for i in range(4):
-            row = self.grid[i*4:(i+1)*4]
-            newGrid.append(self.moveRow(row))
-        self.grid = newGrid
+            row = grid[i*4:(i+1)*4]
+            newGrid += self.moveRow(row)
+        return newGrid
 
-    def flipHorizontally(self):
+    def flipY(self, grid):
+        """
+        Flips grid along y axis
+        """
         newGrid = []
         for i in range(4):
-            newGrid += self.grid[i*4,(i+1)*4][::-1]
-        self.grid = newGrid
+            newGrid += grid[i*4:(i+1)*4][::-1]
+        return newGrid
 
-    def transpose(self):
+    def T(self, grid):
+        """
+        Transposes grid
+        """
         newGrid = []
         for i in range(4):
             for c in range(4):
-                newGrid.append(self.grid[i+(c*4)])
-        self.grid = newGrid
+                newGrid.append(grid[i+(c*4)])
+        return newGrid
 
     def moveRow(self, row):
         prev = -1

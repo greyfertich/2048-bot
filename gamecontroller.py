@@ -13,24 +13,19 @@ class GameController:
 
     def run(self):
         while True:
-            self.makeNextMove()
+            self.bot.updateBoard()
+            self.makeNextMove(moveDelay=0.1)
 
-    def makeNextMove(self):
+    def makeNextMove(self, moveDelay=1):
         """
         Picks the direction of the next move and makes move
         """
-        time.sleep(1)
+        time.sleep(moveDelay)
         nextMove = self.bot.getBestMove()
         pyautogui.keyDown(KEYMAP[nextMove])
         time.sleep(0.05)
         pyautogui.keyUp(KEYMAP[nextMove])
-        self.bot.updateBoard(self.bot.update())
-
-    def findMove(self):
-        """
-        Finds the direction of the next move
-        """
-        grid = self.client.getGrid()
+        self.bot.updateBoard()
 
     def selectGameWindow(self):
         """

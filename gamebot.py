@@ -13,18 +13,14 @@ class GameBot:
         """
         Checks all possible moves and returns the move with highest score
         """
-        m = 0
-        for move in self.possibleMoves:
-            m = max(m,self.tryMove(move))
-        return m
-        #return max([(move, self.tryMove(move)) for move in self.possibleMoves], key=lambda x: x[1])[0]
+        return max([(move, self.tryMove(move)) for move in self.possibleMoves], key=lambda x: x[1])[0]
 
     def tryMove(self, direction):
         """
         Simulates a move on the game board and returns new score
         """
         newGrid = self.client.getBoard().simulateMove(direction)
-        print(KEYMAP[direction])
+        print(KEYMAP[direction], 'score = {}'.format(self.getScore(newGrid)))
         self.client.printGrid(newGrid)
         return self.getScore(self.client.getBoard().simulateMove(direction))
 

@@ -19,7 +19,16 @@ class GameBoard:
             sim = self.simulateMoveUp()
         if direction == DOWN:
             sim = self.simulateMoveDown()
+        if not self.isGridDifferent(sim):
+            return [0] * 16
         return sim
+
+    def isGridDifferent(self, newGrid):
+        """
+        Compares newGrid to self.grid to see if there are any differences.
+        If there are no differences, then the move is invalid.
+        """
+        return sum(old == new for old, new in zip(self.grid, newGrid)) != len(newGrid)
 
     def simulateMoveLeft(self):
         return self.makeMove(self.grid)

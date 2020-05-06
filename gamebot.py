@@ -7,12 +7,13 @@ class GameBot:
                             5,  7, 10, 12,
                             3,  1,  0,  0,
                             0,  0,  0,  0]
+        self.possibleMoves = (LEFT, RIGHT, UP, DOWN)
 
     def getBestMove(self):
         """
         Checks all possible moves and returns the move with highest score
         """
-        pass
+        return max([(move, self.tryMove(move)) for move in self.possibleMoves], key=lambda x: x[1])[0]
 
     def tryMove(self, direction):
         """

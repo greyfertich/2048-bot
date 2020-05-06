@@ -2,7 +2,7 @@ import pyautogui
 import directions
 import time
 
-class GameBot:
+class GameController:
 
     def __init__(self, gameClient):
         self.client = gameClient

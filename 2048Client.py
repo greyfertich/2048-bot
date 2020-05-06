@@ -1,7 +1,6 @@
 from PIL import ImageGrab, ImageOps
 import pyautogui
-
-LEFT, RIGHT, UP, DOWN = 1, 2, 3, 4
+import directions
 
 class GameClient:
     def __init__(self):

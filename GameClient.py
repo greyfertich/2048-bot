@@ -1,10 +1,11 @@
 from PIL import ImageGrab, ImageOps
 import pyautogui
-import directions, tiles
+from directions import LEFT, RIGHT, UP, DOWN
+from tiles import TILES, TILE_COORDINATES
 
 class GameClient:
     def __init__(self):
-        self.tiles = tiles
+        self.tiles = TILES
         self.grid = [0 for _ in range(16)]
         self.window = None
 

@@ -1,3 +1,4 @@
+import pyautogui
 import directions
 import time
 
@@ -28,6 +29,8 @@ class GameBot:
         """
         grid = self.client.getGrid()
 
-    def self.selectGameWindow(self):
-        x_coord, y_coord = self.client.getWindowCoordinates()
-        pyautogui.click(x=x_coord, y=y_coord)
+    def selectGameWindow(self):
+        """
+        Selects the window containing the 2048 game using the mouse
+        """
+        pyautogui.click(self.client.getWindowCoordinates())

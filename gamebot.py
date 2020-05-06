@@ -1,8 +1,8 @@
 from directions import LEFT, RIGHT, UP, DOWN
 
 class GameBot:
-    def __init__(self, gameBoard):
-        self.board = gameBoard
+    def __init__(self, gameClient):
+        self.client = gameClient
         self.scoreboard = [99, 50, 25, 15,
                             5,  7, 10, 12,
                             3,  1,  0,  0,
@@ -19,7 +19,7 @@ class GameBot:
         """
         Simulates a move on the game board and returns new score
         """
-        return self.getScore(self.board.simulateMove(direction))
+        return self.getScore(self.client.getBoard().simulateMove(direction))
 
     def getScore(self, board):
         """

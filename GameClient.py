@@ -2,11 +2,12 @@ from PIL import ImageGrab, ImageOps
 import pyautogui
 from directions import LEFT, RIGHT, UP, DOWN
 from tiles import TILES, TILE_COORDINATES
+from gameboard import GameBoard
 
 class GameClient:
     def __init__(self):
+        self.board = GameBoard()
         self.tiles = TILES
-        self.grid = [0 for _ in range(16)]
         self.window = None
 
     def getGrid(self):
@@ -15,12 +16,12 @@ class GameClient:
         """
         self.window = ImageGrab.grab()
         for index, coord in enumerate(TILE_COORDINATES):
-            self.grid[index] = self.getTileValue(coord)
+            self.board.setTile(index, self.getTileValue(coord))
 
     def printGrid(self):
         for i in range(16):
             if i % 4 == 0:
-                print("[ " + str(grid[i]) + " " + str(grid[i+1]) + " " + str(grid[i+2]) + " " + str(grid[i+3]) + " ]")
+                print("[ " + str(grid.getTile(i)) + " " + str(grid.getTile(i+1)) + " " + str(grid.getTile(i+2)) + " " + str(grid.getTile(i+3)) + " ]")
 
     def move(self, direction):
         """

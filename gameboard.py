@@ -1,8 +1,14 @@
 from directions import LEFT, RIGHT, UP, DOWN
 
 class GameBoard:
-    def __init__(self, grid):
-        self.grid = grid
+    def __init__(self):
+        self.grid = [0 for _ in range(16)]
+
+    def getTile(self, index):
+        return self.grid[index]
+
+    def setTile(self, index, value):
+        self.grid[index] = value
 
     def simulateMove(self, direction):
         if direction == LEFT:

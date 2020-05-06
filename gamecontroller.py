@@ -1,16 +1,15 @@
 import pyautogui
 from gamebot import GameBot
 from gameclient import GameClient
-import directions
+from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
 import time
 
 class GameController:
 
     def __init__(self):
         self.client = GameClient()
-        self.bot = GameBot()
+        self.bot = GameBot(self.client)
         self.selectGameWindow()
-        self.keyMap = {LEFT: 'left', RIGHT: 'right', UP: 'up', DOWN: 'down'}
 
     def run(self):
         while True:
@@ -22,9 +21,10 @@ class GameController:
         """
         time.sleep(1)
         nextMove = self.bot.getBestMove()
-        pyautogui.keyDown(self.keyMap[nextMove])
+        pyautogui.keyDown(KEYMAP[nextMove])
         time.sleep(0.05)
-        pyautogui.keyUp(self.keyMap[nextMove])
+        pyautogui.keyUp(KEYMAP[nextMove])
+        self.bot.updateBoard(self.bot.update())
 
     def findMove(self):
         """

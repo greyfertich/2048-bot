@@ -4,9 +4,9 @@ class GameBot:
     def __init__(self, gameClient):
         self.client = gameClient
         self.scoreboard = [99, 50, 25, 15,
-                            5,  7, 10, 12,
-                            3,  1,  0,  0,
-                            0,  0,  0,  0]
+                           50, 15, 10, 10,
+                           25, 10,  3,  2,
+                           15,  3,  2,  0]
         self.possibleMoves = (LEFT, RIGHT, UP, DOWN)
 
     def getBestMove(self):
@@ -19,9 +19,6 @@ class GameBot:
         """
         Simulates a move on the game board and returns new score
         """
-        newGrid = self.client.getBoard().simulateMove(direction)
-        print(KEYMAP[direction], 'score = {}'.format(self.getScore(newGrid)))
-        self.client.printGrid(newGrid)
         return self.getScore(self.client.getBoard().simulateMove(direction))
 
     def getScore(self, board):

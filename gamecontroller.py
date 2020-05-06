@@ -14,7 +14,7 @@ class GameController:
     def run(self):
         while True:
             self.bot.updateBoard()
-            self.makeNextMove(moveDelay=0.1)
+            self.makeNextMove(moveDelay=0)
 
     def makeNextMove(self, moveDelay=1):
         """
@@ -23,7 +23,7 @@ class GameController:
         time.sleep(moveDelay)
         nextMove = self.bot.getBestMove()
         pyautogui.keyDown(KEYMAP[nextMove])
-        time.sleep(0.05)
+        time.sleep(0.01)
         pyautogui.keyUp(KEYMAP[nextMove])
         self.bot.updateBoard()
 

@@ -1,12 +1,17 @@
 import pyautogui
+from gamebot import GameBot
+from gameclient import GameClient
 import directions
 import time
 
 class GameController:
 
-    def __init__(self, gameClient):
-        self.client = gameClient
+    def __init__(self):
+        self.client = GameClient()
+        self.bot = GameBot()
         self.selectGameWindow()
+
+    def run(self):
         while True:
             self.makeNextMove()
 

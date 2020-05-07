@@ -7,7 +7,7 @@ class GameController:
 
     def __init__(self, gameplayMode='local'):
         self.client = self.getGameClient(gameplayMode)
-        self.bot = GameBot()
+        self.bot = GameBot(optimizer='random')
 
     def getGameClient(self, gameplayMode):
         if gameplayMode == 'browser':
@@ -23,6 +23,7 @@ class GameController:
             time.sleep(moveDelay)
             gameOver = self.makeNextMove()
         print('Game over')
+        return self.client.getBoard()[0].getGrid()
 
     def makeNextMove(self):
         """

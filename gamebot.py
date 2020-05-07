@@ -1,14 +1,23 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from montecarlo import MonteCarloSimulation
+from movement_optimizers import MonteCarloOptimizer, RandomOptimizer
 
 class GameBot:
-    def __init__(self):
+    def __init__(self, optimizer='montecarlo'):
         self.possibleMoves = (LEFT, RIGHT, UP, DOWN)
+        self.optimization_type = optimizer
 
     def getBestMove(self, board):
         """
         Checks all possible moves and returns the move with highest score
         """
-        simulation = MonteCarloSimulation(board.getGrid())
-        bestMove = simulation.simulateGame(n_games=10)
+        simulation = self.getOptimizer(board.getGrid(), type=self.optimization_type)
+        bestMove = simulation.getBestMove(n_games=10)
         return bestMove
+
+    def getOptimizer(self, grid, type='montecarlo'):
+        if type == 'montecarlo':
+            return MonteCarloOptimizer(grid)
+        elif type == 'random':
+            return RandomOptimizer(grid)
+        else:
+            return ValueError('Invalid optimizer type')

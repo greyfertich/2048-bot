@@ -45,8 +45,8 @@ class GameBoard:
         if len(possible) > 0:
             choice = 2 if random.random() < 0.9 else 4
             grid[random.choice(possible)] = choice
-            return True
-        return False
+            return False
+        return True
 
     def isGridDifferent(self, newGrid):
         """

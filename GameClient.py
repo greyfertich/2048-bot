@@ -112,4 +112,4 @@ class LocalClient(GameClient):
 
     def makeMove(self, direction):
         self.board.printBoard()
-        return self.board.move(direction)
+        self.gameOver = self.board.move(direction)

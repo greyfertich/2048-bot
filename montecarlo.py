@@ -15,12 +15,10 @@ class MonteCarloSimulation:
         return simulateGame(n_games)
 
     def simulateGame(self, n_games):
-        print('Starting simulation')
         moves = [LEFT, RIGHT, UP, DOWN]
         moveScores = {LEFT: [], RIGHT: [], UP: [], DOWN: []}
         moveCounter = 0
         for i in range(n_games):
-            print('Simulating game {}'.format(i))
             grid = self.grid
             move_counter = 0
             firstMove = -1
@@ -43,7 +41,6 @@ class MonteCarloSimulation:
                     if not canMoveBeMade:
                         gameOver = True
             score = sum(tile*score for tile, score in zip(grid, self.scoreboard))
-            print('Game {} score: {}'.format(i,score))
             moveScores[firstMove].append(score)
         # return best move by score
         return max(moveScores, key=lambda x:(sum(moveScores[x])/len(moveScores[x])) if len(moveScores[x]) > 0 else 0)

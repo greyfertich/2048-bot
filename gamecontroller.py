@@ -1,34 +1,37 @@
-import pyautogui
 from gamebot import GameBot
-from gameclient import GameClient
+from gameclient import BrowserClient, LocalClient
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
 import time
 
 class GameController:
 
-    def __init__(self):
-        self.client = GameClient()
-        self.bot = GameBot(self.client)
-        self.selectGameWindow()
+    def __init__(self, gameplayMode='browser'):
+        self.client = self.getGameClient(gameplayMode)
+        self.bot = GameBot()
 
-    def run(self):
-        while not self.client.isGameOver():
-            self.bot.updateBoard()
-            self.makeNextMove(moveDelay=0)
+    def getGameClient(self, gameplayMode):
+        if gameplayMode == 'browser':
+            return BrowserClient()
+        elif gameplayMode == 'local':
+            return LocalClient()
+        else:
+            raise ValueError('Invalid gameplay mode "{}", must be "browser", or "local"'.format(gameplayMode))
+
+    def run(self, moveDelay=0.5):
+        gameOver = False
+        while not gameOver:
+            time.sleep(moveDelay)
+            gameOver = self.makeNextMove()
         print('Game over')
 
-    def makeNextMove(self, moveDelay=0.5):
+    def makeNextMove(self):
         """
-        Picks the direction of the next move and makes move
+        Picks the direction of the next move and makes move.
+        Returns:
+        True if game is over, otherwise False
         """
-        time.sleep(moveDelay)
-        nextMove = self.bot.getBestMove()
-        pyautogui.keyDown(KEYMAP[nextMove])
-        time.sleep(0.01)
-        pyautogui.keyUp(KEYMAP[nextMove])
-
-    def selectGameWindow(self):
-        """
-        Selects the window containing the 2048 game using the mouse
-        """
-        pyautogui.click(self.client.getWindowCoordinates())
+        board, gameOver = self.client.getBoard()
+        if not gameOver:
+            nextMove = self.bot.getBestMove(board)
+            self.client.makeMove(nextMove)
+        return gameOver

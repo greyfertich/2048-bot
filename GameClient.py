@@ -9,6 +9,7 @@ class GameClient:
         self.board = GameBoard()
         self.tiles = TILES
         self.window = None
+        self.gameOver = False
 
     def getBoard(self):
         return self.board
@@ -19,18 +20,16 @@ class GameClient:
         """
         self.window = ImageGrab.grab()
         for index, coord in enumerate(TILE_COORDINATES):
-            self.board.setTile(index, self.getTileValue(coord))
-
+            try:
+                self.board.setTile(index, self.getTileValue(coord))
+            except KeyError:
+                print(coord)
+                self.gameOver = True
+                break
     def printGrid(self, grid):
         for i in range(16):
             if i % 4 == 0:
                 print("[ " + str(grid[i]) + " " + str(grid[i+1]) + " " + str(grid[i+2]) + " " + str(grid[i+3]) + " ]")
-
-    def move(self, direction):
-        """
-        Makes a move on the 2048 board in a direction (Left, Right, Up, Down)
-        """
-        pass
 
     def getTileValue(self, tileCoordinates):
         """
@@ -50,3 +49,6 @@ class GameClient:
         This is used by the bot to select the correct window
         """
         return TILE_COORDINATES[0]
+
+    def isGameOver(self):
+        return self.gameOver

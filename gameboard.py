@@ -89,6 +89,3 @@ class GameBoard:
                     i += 1
 
         return temp
-
-    def update(self):
-        pass

@@ -12,11 +12,12 @@ class GameController:
         self.selectGameWindow()
 
     def run(self):
-        while True:
+        while not self.client.isGameOver():
             self.bot.updateBoard()
             self.makeNextMove(moveDelay=0)
+        print('Game over')
 
-    def makeNextMove(self, moveDelay=1):
+    def makeNextMove(self, moveDelay=0.5):
         """
         Picks the direction of the next move and makes move
         """
@@ -25,7 +26,6 @@ class GameController:
         pyautogui.keyDown(KEYMAP[nextMove])
         time.sleep(0.01)
         pyautogui.keyUp(KEYMAP[nextMove])
-        self.bot.updateBoard()
 
     def selectGameWindow(self):
         """

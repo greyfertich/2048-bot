@@ -1,19 +1,17 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
+from montecarlo import MonteCarloSimulation
 
 class GameBot:
     def __init__(self, gameClient):
         self.client = gameClient
-        self.scoreboard = [99, 50, 25, 10,
-                           50, 30, 20,  10,
-                           25, 20,  10,  5,
-                           10,  10,  5,  2]
         self.possibleMoves = (LEFT, RIGHT, UP, DOWN)
 
     def getBestMove(self):
         """
         Checks all possible moves and returns the move with highest score
         """
-        bestMove = max([(move, self.tryMove(move)) for move in self.possibleMoves], key=lambda x: x[1])[0]
+        simulation = MonteCarloSimulation(self.client.getBoard().getGrid())
+        bestMove = simulation.simulateGame(n_games=10)
         self.client.updateScore(bestMove)
         return bestMove
 

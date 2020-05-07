@@ -1,4 +1,5 @@
 from directions import LEFT, RIGHT, UP, DOWN
+import random
 
 class GameBoard:
     def __init__(self):
@@ -142,3 +143,6 @@ class GameBoard:
 
     def getScore(self):
         return self.score
+
+    def getGrid(self):
+        return self.grid

@@ -10,6 +10,10 @@ class GameClient:
         self.board = GameBoard()
         self.tiles = TILES
         self.gameOver = False
+        self.initializeGame()
+
+    def initializeGame(self):
+        pass
 
     def getBoard(self):
         pass
@@ -49,9 +53,8 @@ class BrowserClient(GameClient):
     def __init__(self):
         super().__init__()
         self.window = None
-        self.selectGameWindow()
 
-    def selectGameWindow(self):
+    def initializeGame(self):
         """
         Selects the browser window containing the 2048 game using the mouse
         """
@@ -100,3 +103,13 @@ class BrowserClient(GameClient):
 class LocalClient(GameClient):
     def __init__(self):
         super().__init__()
+
+    def initializeGame(self):
+        self.board.createNewGame()
+
+    def getBoard(self):
+        return self.board, self.gameOver
+
+    def makeMove(self, direction):
+        self.board.printBoard()
+        return self.board.move(direction)

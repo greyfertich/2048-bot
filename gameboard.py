@@ -6,6 +6,10 @@ class GameBoard:
         self.grid = [0 for _ in range(16)]
         self.score = 0
 
+    def createNewGame(self):
+        while self.grid.count(0) > 14:
+            self.addRandomTile(self.grid)
+
     def getTile(self, index):
         return self.grid[index]
 
@@ -24,6 +28,25 @@ class GameBoard:
         if not self.isGridDifferent(sim):
             return [0] * 16
         return sim
+
+    def move(self, direction):
+        if direction == LEFT:
+            self.grid = self.simulateMoveLeft()
+        if direction == RIGHT:
+            self.grid = self.simulateMoveRight()
+        if direction == UP:
+            self.grid = self.simulateMoveUp()
+        if direction == DOWN:
+            self.grid = self.simulateMoveDown()
+        return self.addRandomTile(self.grid)
+
+    def addRandomTile(self, grid):
+        possible = [i for i,n in enumerate(grid) if n == 0]
+        if len(possible) > 0:
+            choice = 2 if random.random() < 0.9 else 4
+            grid[random.choice(possible)] = choice
+            return True
+        return False
 
     def isGridDifferent(self, newGrid):
         """
@@ -146,3 +169,9 @@ class GameBoard:
 
     def getGrid(self):
         return self.grid
+
+    def printBoard(self):
+        for i in range(16):
+            if i % 4 == 0:
+                print('[ {} {} {} {} ]'.format(self.grid[i],self.grid[i+1],self.grid[i+2],self.grid[i+3]))
+        print()

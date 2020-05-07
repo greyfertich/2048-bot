@@ -5,7 +5,7 @@ import time
 
 class GameController:
 
-    def __init__(self, gameplayMode='browser'):
+    def __init__(self, gameplayMode='local'):
         self.client = self.getGameClient(gameplayMode)
         self.bot = GameBot()
 

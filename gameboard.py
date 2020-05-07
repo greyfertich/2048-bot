@@ -3,6 +3,7 @@ from directions import LEFT, RIGHT, UP, DOWN
 class GameBoard:
     def __init__(self):
         self.grid = [0 for _ in range(16)]
+        self.score = 0
 
     def getTile(self, index):
         return self.grid[index]
@@ -74,18 +75,70 @@ class GameBoard:
         temp = [0, 0, 0, 0]
 
         for element in row:
-
             if element != 0:
                 if prev == -1:
                     prev = element
                     temp[i] = element
                     i += 1
                 elif prev == element:
-                    temp[i - 1] = 2 * prev
+                    temp[i-1] = 2*prev
                     prev = -1
                 else:
                     prev = element
                     temp[i] = element
                     i += 1
-
         return temp
+
+    def scoreMove(self, grid):
+        newScore = 0
+        for i in range(4):
+            row = grid[i*4:(i+1)*4]
+            newScore += self.scoreRowMove(row)
+        return newScore
+
+    def scoreRowMove(self, row):
+        prev = -1
+        i = 0
+        temp = [0, 0, 0, 0]
+        score = 0
+
+        for element in row:
+            if element != 0:
+                if prev == -1:
+                    prev = element
+                    temp[i] = element
+                    i += 1
+                elif prev == element:
+                    temp[i-1] = 2*prev
+                    score += temp[i-1]
+                    prev = -1
+                else:
+                    prev = element
+                    temp[i] = element
+                    i += 1
+        return score
+
+    def updateScore(self, direction):
+        if direction == LEFT:
+            self.scoreMoveLeft()
+        if direction == RIGHT:
+            self.scoreMoveRight()
+        if direction == UP:
+            self.scoreMoveUp()
+        if direction == DOWN:
+            self.scoreMoveDown()
+
+    def scoreMoveLeft(self):
+        self.score += self.scoreMove(self.grid)
+
+    def scoreMoveRight(self):
+        self.score += self.scoreMove(self.flipY(self.grid))
+
+    def scoreMoveUp(self):
+        self.score += self.scoreMove(self.T(self.grid))
+
+    def scoreMoveDown(self):
+        self.score += self.scoreMove(self.flipY(self.T(self.grid)))
+
+    def getScore(self):
+        return self.score

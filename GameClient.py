@@ -50,5 +50,11 @@ class GameClient:
         """
         return TILE_COORDINATES[0]
 
+    def updateScore(self, direction):
+        self.board.updateScore(direction)
+
+    def getScore(self):
+        return self.board.getScore()
+
     def isGameOver(self):
         return self.gameOver

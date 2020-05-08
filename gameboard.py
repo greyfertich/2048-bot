@@ -30,7 +30,7 @@ class GameBoard:
         return sim
 
     def move(self, direction):
-        self.printBoard()
+        #self.printBoard()
         if direction == LEFT:
             self.grid = self.simulateMoveLeft()
         if direction == RIGHT:

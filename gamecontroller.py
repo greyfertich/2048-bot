@@ -5,9 +5,9 @@ import time
 
 class GameController:
 
-    def __init__(self, gameplayMode='local'):
+    def __init__(self, gameplayMode='local', optimizer='montecarlo'):
         self.client = self.getGameClient(gameplayMode)
-        self.bot = GameBot(optimizer='random')
+        self.bot = GameBot(optimizer)
 
     def getGameClient(self, gameplayMode):
         if gameplayMode == 'browser':

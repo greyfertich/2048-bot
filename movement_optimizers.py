@@ -188,7 +188,7 @@ class BruteForceOptimizer(MovementOptimizerInterface):
                            50, 30, 20,  10,
                            25, 20,  10,  5,
                            10,  10,  5,  2]
-        self.n_moves = 2
+        self.n_moves = 3
 
     def getBestMove(self, **kwargs):
         grid = self.grid

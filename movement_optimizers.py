@@ -184,11 +184,11 @@ class RandomOptimizer(MovementOptimizerInterface):
 class BruteForceOptimizer(MovementOptimizerInterface):
     def __init__(self, grid):
         super().__init__(grid)
-        self.scoreboard = [99, 50, 25, 10,
-                           50, 30, 20,  10,
-                           25, 20,  10,  5,
-                           10,  10,  5,  2]
-        self.n_moves = 3
+        self.scoreboard = [99, 50, 10,  0,
+                           50, 30,  0,  0,
+                           10,  0,  0,  0,
+                            0,  0,  0,  0]
+        self.n_moves = 2
 
     def getBestMove(self, **kwargs):
         grid = self.grid

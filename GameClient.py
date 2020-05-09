@@ -70,7 +70,7 @@ class BrowserClient(GameClient):
             try:
                 self.board.setTile(index, self.getTileValue(coord))
             except KeyError:
-                print(coord)
+                print(self.window.getpixel(coord))
                 self.gameOver = True
                 break
         return self.board, self.gameOver

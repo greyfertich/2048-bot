@@ -34,5 +34,8 @@ class GameController:
         board, gameOver = self.client.getBoard()
         if not gameOver:
             nextMove = self.bot.getBestMove(board)
-            self.client.makeMove(nextMove)
+            if nextMove == 0:
+                gameOver = True
+            else:
+                self.client.makeMove(nextMove)
         return gameOver

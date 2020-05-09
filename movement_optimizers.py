@@ -293,7 +293,6 @@ class ChainOptimizer(MovementOptimizerInterface):
 
     def getBestMove(self, depth=3, **kwargs):
         move, score = self.nextMoveRecur(self.grid, depth, depth)
-        print(self.isMoveValid(self.grid, move))
         return move
     def nextMoveRecur(self, grid, depth, max_depth, base=0.9):
         bestScore = -1

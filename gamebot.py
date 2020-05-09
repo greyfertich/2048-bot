@@ -12,11 +12,11 @@ class GameBot:
         Checks all possible moves and returns the move with highest score
         """
         simulation = self.getOptimizer(board.getGrid(), type=self.optimization_type)
-        for i in range(16):
-            if i % 4 == 0:
-                g = board.getGrid()
-                print('[ {} {} {} {} ]'.format(g[i],g[i+1],g[i+2],g[i+3]))
-        print()
+        # for i in range(16):
+        #     if i % 4 == 0:
+        #         g = board.getGrid()
+        #         print('[ {} {} {} {} ]'.format(g[i],g[i+1],g[i+2],g[i+3]))
+        # print()
         bestMove = simulation.getBestMove(n_games=self.n_games)
         return bestMove
 

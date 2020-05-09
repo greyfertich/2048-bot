@@ -1,5 +1,5 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from movement_optimizers import MonteCarloOptimizer, RandomOptimizer, BruteForceOptimizer, SingleMoveOptimizer
+from movement_optimizers import ChainOptimizer, MonteCarloOptimizer, RandomOptimizer, BruteForceOptimizer, SingleMoveOptimizer
 
 class GameBot:
     def __init__(self, optimizer='montecarlo', n_games=10):
@@ -29,5 +29,7 @@ class GameBot:
             return BruteForceOptimizer(grid)
         elif type == 'single':
             return SingleMoveOptimizer(grid)
+        elif type == 'chain':
+            return ChainOptimizer(grid)
         else:
             return ValueError('Invalid optimizer type')

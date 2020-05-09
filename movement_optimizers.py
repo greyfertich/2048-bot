@@ -280,3 +280,36 @@ class ExpectiMiniMaxOptimizer(MovementOptimizerInterface):
 
     def getBestMove(self, **kwargs):
         pass
+
+class ChainOptimizer(MovementOptimizerInterface):
+    def __init__(self, grid):
+        super().__init__(grid)
+        row1 = [1/(2**i) for i in range(4)]
+        row2 = [1/(2**i) for i in range(4,8)][::-1]
+        row3 = [1/(2**i) for i in range(8,12)]
+        row4 = [1/(2**i) for i in range(12,16)][::-1]
+        self.scoreboard = row1 + row2 + row3 + row4
+
+
+    def getBestMove(self, depth=3, **kwargs):
+        move, score = self.nextMoveRecur(self.grid, depth, depth)
+        print(self.isMoveValid(self.grid, move))
+        return move
+    def nextMoveRecur(self, grid, depth, max_depth, base=0.9):
+        bestScore = -1
+        bestMove = 0
+        for move in self.moves:
+            newGrid = list(grid)
+            if (self.isMoveValid(newGrid, move)):
+                newGrid = self.simulateMove(newGrid, move)
+                score = self.evaluate(newGrid)
+                if depth != 0:
+                    my_move, my_score = self.nextMoveRecur(newGrid, depth-1, max_depth)
+                    score += my_score*pow(base,max_depth-depth+1)
+                if score > bestScore:
+                    bestMove = move
+                    bestScore = score
+        #print(self.isMoveValid(newGrid,bestMove))
+        return (bestMove, bestScore)
+    def evaluate(self, grid):
+        return sum(tile*score for tile,score in zip(grid, self.scoreboard))

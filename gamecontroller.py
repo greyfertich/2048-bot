@@ -5,9 +5,9 @@ import time
 
 class GameController:
 
-    def __init__(self, gameplayMode='local', optimizer='montecarlo'):
+    def __init__(self, gameplayMode='local', optimizer='montecarlo', n_games=10):
         self.client = self.getGameClient(gameplayMode)
-        self.bot = GameBot(optimizer)
+        self.bot = GameBot(optimizer, n_games=n_games)
 
     def getGameClient(self, gameplayMode):
         if gameplayMode == 'browser':
@@ -22,7 +22,7 @@ class GameController:
         while not gameOver:
             time.sleep(moveDelay)
             gameOver = self.makeNextMove()
-        print('Game over')
+        # print('Game over')
         return self.client.getBoard()[0].getGrid()
 
     def makeNextMove(self):

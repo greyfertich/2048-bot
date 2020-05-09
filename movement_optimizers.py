@@ -95,6 +95,28 @@ class MovementOptimizerInterface:
             randomTileValue = 2 if random.random() < 0.9 else 4
             grid[random.choice(emptyTiles)] = randomTileValue
 
+    def isMoveValid(self, grid, move):
+        return self.simulateMove(grid, move, checkEnd=True).count(0) < 16
+
+class SingleMoveOptimizer(MovementOptimizerInterface):
+    def __init__(self, grid):
+        super().__init__(grid)
+        self.scoreboard = [99, 50, 25, 10,
+                           50, 30, 20,  0,
+                           25, 20,  0,  0,
+                           10,  0,  0,  0]
+
+    def getBestMove(self, **kwargs):
+        grid = self.grid
+        scores = {move:0 for move in self.moves}
+        for move in self.moves:
+            if self.isMoveValid(grid, move):
+                scores[move] = self.score(self.simulateMove(grid, move))
+        return max(scores, key=lambda x:scores[x])
+
+    def score(self, grid):
+        return sum([tile*score for tile,score in zip(grid, self.scoreboard)])
+
 class MonteCarloOptimizer(MovementOptimizerInterface):
     def __init__(self, grid):
         super().__init__(grid)
@@ -129,10 +151,22 @@ class MonteCarloOptimizer(MovementOptimizerInterface):
         return table
 
     def getBestMove(self, n_games=10):
-        return self.simulateGame(n_games)
+        return self.getMaxMove(n_games)
+
+    def getMaxMove(self, n_games):
+        mins = {}
+        b = False
+        for move in self.moves:
+            if self.isMoveValid(self.grid, move):
+                mins[move] = self.simulateGame(n_games)
+                b = True
+        # print('mins:', mins)
+        # print(b)
+        return max(mins, key=lambda x:mins[x])
+
 
     def simulateGame(self, n_games):
-        moveScores = {LEFT: [], RIGHT: [], UP: [], DOWN: []}
+        moveScores = {move:0 for move in self.moves}
         moveCounter = 0
         for i in range(n_games):
             grid = self.grid
@@ -140,14 +174,9 @@ class MonteCarloOptimizer(MovementOptimizerInterface):
             firstMove = -1
             gameOver = False
             depth = 3
-            print('starting grid:')
-            for i in range(16):
-                if i % 4 == 0:
-                    print('[ {} {} {} {} ]'.format(grid[i],grid[i+1],grid[i+2],grid[i+3]))
-            print()
 
             while not gameOver and depth >= 0: # While game is not over
-                depth -= 1
+                #depth -= 1
                 move = random.choice(self.moves)
                 if move_counter == 0:
                     firstMove = move
@@ -160,21 +189,14 @@ class MonteCarloOptimizer(MovementOptimizerInterface):
                     # check to see if any possible moves can be made
                     canMoveBeMade = False
                     for move in self.moves:
-                        if self.simulateMove(grid, move, checkEnd=True).count(0) != 16:
+                        if self.isMoveValid(grid, move):
                             canMoveBeMade = True
                     if not canMoveBeMade:
                         gameOver = True
-                print('moved ', KEYMAP[move])
-                for i in range(16):
-                    if i % 4 == 0:
-                        print('[ {} {} {} {} ]'.format(grid[i],grid[i+1],grid[i+2],grid[i+3]))
-                print()
             score = sum(tile*score for tile, score in zip(grid, self.scoreboard))
-            moveScores[firstMove].append(score)
-            print(moveScores)
-            time.sleep(2)
+            moveScores[firstMove] = min(score, moveScores[firstMove]) if moveScores[firstMove] > 0 else score
         # return best move by score
-        return max(moveScores, key=lambda x:(sum(moveScores[x])/len(moveScores[x])) if len(moveScores[x]) > 0 else 0)
+        return min(moveScores.values())
 
 
 class RandomOptimizer(MovementOptimizerInterface):
@@ -184,51 +206,63 @@ class RandomOptimizer(MovementOptimizerInterface):
 class BruteForceOptimizer(MovementOptimizerInterface):
     def __init__(self, grid):
         super().__init__(grid)
-        self.scoreboard = [99, 50, 10,  0,
-                           50, 30,  0,  0,
-                           10,  0,  0,  0,
+        self.scoreboard = [99, 50, 25, 10,
+                           0,  0,  3,  5,
+                           0,  0,  0,  0,
                             0,  0,  0,  0]
-        self.n_moves = 2
+        self.n_moves = 1
+        self.move_sequence = []
 
     def getBestMove(self, **kwargs):
+        if len(self.move_sequence) > 0:
+            return self.move_sequence.pop(0)
         grid = self.grid
-        scoresPerMove = {move:[] for move in self.moves}
+        self.move_sequence = []
+        highest_score = 0
+
         for move in self.moves:
             if self.isMoveValid(grid, move):
-                scoresPerMove[move] = self.playAllPossibleGames(self.simulateMove(grid, move), 1, 0)
-        move = max(scoresPerMove, key=lambda x:sum(scoresPerMove[x])/len(scoresPerMove[x]) if len(scoresPerMove[x]) > 0 else 0)
-        # print('returning move', move)
-        # avgs = {KEYMAP[x]: sum(scoresPerMove[x])/len(scoresPerMove[x]) if len(scoresPerMove[x]) > 0 else 0 for x in scoresPerMove}
-        # print(avgs)
-        return max(scoresPerMove, key=lambda x:sum(scoresPerMove[x])/len(scoresPerMove[x]) if len(scoresPerMove[x]) > 0 else 0)
+                seq, score = self.playAllPossibleGames(self.simulateMove(grid, move), 1, 0)
+                print(score, seq)
+                if score > highest_score:
+                    highest_score = score
+                    self.move_sequence = [move] + seq
+        return self.move_sequence.pop(0)
 
     def playAllPossibleGames(self, grid, probability, depth):
         scores = []
         if probability < 0.00001:
             return []
         if self.isGameOver(grid):
-            # print(' game is ova')
             return [sum(tile*score for tile,score in zip(grid, self.scoreboard))]
         if depth < self.n_moves:
             zeros = [i for i,n in enumerate(grid) if n == 0]
-            # print('num zeros: ', zeros)
+            endScore, endSeq = 0, []
             for move in self.moves:
+                curSeq = [move]
+                curScore = 0
                 newGrid = self.simulateMove(grid, move, checkEnd=True)
                 if newGrid.count(0) < 16:
                     for index in zeros:
                         newGrid[index] = 2
-                        scores += self.playAllPossibleGames(newGrid, probability*0.9, depth+1)
+                        seq, score = self.playAllPossibleGames(newGrid, probability*0.9, depth+1)
+                        if score > curScore:
+                            curScore = score
+                            curSeq += seq
                         newGrid[index] = 4
-                        scores += self.playAllPossibleGames(newGrid, probability*0.1, depth+1)
+                        seq, score = self.playAllPossibleGames(newGrid, probability*0.1, depth+1)
+                        if score > curScore:
+                            curScore = score
+                            curSeq += seq
                         newGrid[index] = 0
+                if curScore > endScore:
+                    endScore = curScore
+                    endSeq = curSeq
+            return endSeq, curScore
         else:
-            scores = [sum(tile*score for tile,score in zip(grid, self.scoreboard))]
-        # if len(scores) > 0:
-            # print('returning {}'.format(scores))
-        return scores
-
-    def isMoveValid(self, grid, move):
-        return self.simulateMove(grid, move, checkEnd=True).count(0) < 16
+            score = sum(tile*score for tile, score in zip(grid, self.scoreboard))
+            seq = []
+        return seq, score
 
     def isGameOver(self, grid):
         if grid.count(0) == 0:
@@ -239,3 +273,10 @@ class BruteForceOptimizer(MovementOptimizerInterface):
             if count == 4:
                 return True
         return False
+
+class ExpectiMiniMaxOptimizer(MovementOptimizerInterface):
+    def __init__(self, grid):
+        super().__init__(grid)
+
+    def getBestMove(self, **kwargs):
+        pass

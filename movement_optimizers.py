@@ -59,8 +59,8 @@ class ChainOptimizer(MovementOptimizerInterface):
     def nextMoveRecur(self, game, depth, max_depth, base=0.9):
         bestScore = -1
         bestMove = 0
+        state = GameState(game.getGrid(), game.getScore(), game.isGameOver())
         for move in self.moves:
-            state = GameState(game.getGrid(), game.getScore(), game.isGameOver())
             newGame = Game2048(prev_state=state)
             if (newGame.moveIsValid(move)):
                 newGame.move(move)

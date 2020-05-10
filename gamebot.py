@@ -12,21 +12,12 @@ class GameBot:
         Checks all possible moves and returns the move with highest score
         """
         simulation = self.getOptimizer(game, type=self.optimization_type)
-        # for i in range(16):
-        #     if i % 4 == 0:
-        #         g = board.getGrid()
-        #         print('[ {} {} {} {} ]'.format(g[i],g[i+1],g[i+2],g[i+3]))
-        # print()
         bestMove = simulation.getBestMove(n_games=self.n_games)
         return bestMove
 
-    def getOptimizer(self, game, type='montecarlo'):
-        if type == 'montecarlo':
-            return MonteCarloOptimizer(game)
-        elif type == 'random':
+    def getOptimizer(self, game, type='chain'):
+        if type == 'random':
             return RandomOptimizer(game)
-        elif type == 'bruteforce':
-            return BruteForceOptimizer(game)
         elif type == 'single':
             return SingleMoveOptimizer(game)
         elif type == 'chain':

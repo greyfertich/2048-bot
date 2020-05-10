@@ -31,9 +31,9 @@ class GameController:
         Returns:
         True if game is over, otherwise False
         """
-        board, gameOver = self.client.getBoard()
+        game, gameOver = self.client.getBoard()
         if not gameOver:
-            nextMove = self.bot.getBestMove(board)
+            nextMove = self.bot.getBestMove(game)
             if nextMove == 0:
                 gameOver = True
             else:

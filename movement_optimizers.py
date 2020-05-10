@@ -8,35 +8,38 @@ class MovementOptimizerInterface:
     def __init__(self, game):
         self.game = game
         self.moves = [LEFT, RIGHT, UP, DOWN]
+        row1 = [1/(2**i) for i in range(4)]
+        row2 = [1/(2**i) for i in range(4,8)][::-1]
+        row3 = [1/(2**i) for i in range(8,12)]
+        row4 = [1/(2**i) for i in range(12,16)][::-1]
+        self.scoreboard = row1 + row2 + row3 + row4
 
     def getBestMove(self, **kwargs):
         pass
 
 
 class SingleMoveOptimizer(MovementOptimizerInterface):
-    def __init__(self, grid):
-        super().__init__(grid)
-        self.scoreboard = [99, 50, 25, 10,
-                           50, 30, 20,  0,
-                           25, 20,  0,  0,
-                           10,  0,  0,  0]
+    def __init__(self, game):
+        super().__init__(game)
 
     def getBestMove(self, **kwargs):
-        grid = self.grid
+        state = GameState(self.game.getGrid(), self.game.getScore(), self.game.isGameOver())
         scores = {move:0 for move in self.moves}
         for move in self.moves:
-            if self.isMoveValid(grid, move):
-                scores[move] = self.score(self.simulateMove(grid, move))
+            newGame = Game2048(prev_state=state)
+            if newGame.moveIsValid(move):
+                newGame.move(move)
+                scores[move] = self.score(newGame)
         return max(scores, key=lambda x:scores[x])
 
-    def score(self, grid):
-        return sum([tile*score for tile,score in zip(grid, self.scoreboard)])
+    def score(self, game):
+        return sum([tile*score for tile,score in zip(game.getGrid(), self.scoreboard)])
 
 
 class RandomOptimizer(MovementOptimizerInterface):
     def getBestMove(self, **kwargs):
         return random.choice([LEFT, RIGHT, UP, DOWN])
-        
+
 
 class ExpectiMiniMaxOptimizer(MovementOptimizerInterface):
     def __init__(self, grid):
@@ -48,16 +51,11 @@ class ExpectiMiniMaxOptimizer(MovementOptimizerInterface):
 class ChainOptimizer(MovementOptimizerInterface):
     def __init__(self, game):
         super().__init__(game)
-        row1 = [1/(2**i) for i in range(4)]
-        row2 = [1/(2**i) for i in range(4,8)][::-1]
-        row3 = [1/(2**i) for i in range(8,12)]
-        row4 = [1/(2**i) for i in range(12,16)][::-1]
-        self.scoreboard = row1 + row2 + row3 + row4
-
 
     def getBestMove(self, depth=5, **kwargs):
         move, score = self.nextMoveRecur(self.game, depth, depth)
         return move
+
     def nextMoveRecur(self, game, depth, max_depth, base=0.9):
         bestScore = -1
         bestMove = 0

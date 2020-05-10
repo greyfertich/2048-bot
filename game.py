@@ -1,15 +1,20 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
 import random
 
+class GameState:
+    def __init__(self, grid, score, gameOver):
+        self.grid = grid
+        self.score = score
+        self.gameOver = gameOver
 
 class Game2048:
-    def __init__(self, game=None):
-        if game is None:
+    def __init__(self, prev_state=None):
+        if prev_state is None:
             self.initializeGame()
         else:
-            self.grid = list(game.getGrid())
-            self.score = game.getScore()
-            self.gameOver = game.gameIsOver()
+            self.grid = list(prev_state.grid)
+            self.score = prev_state.score
+            self.gameOver = prev_state.gameOver
 
     def getScore(self):
         return self.score
@@ -17,7 +22,7 @@ class Game2048:
     def getGrid(self):
         return self.grid
 
-    def gameIsOver(self):
+    def isGameOver(self):
         gameOver = True
         for direction in [LEFT, RIGHT, UP, DOWN]:
             if self.moveIsValid(direction):
@@ -30,11 +35,13 @@ class Game2048:
         while self.grid.count(0) > 14:
             self.placeRandomTile()
         self.score = 0
+        self.gameOver = False
 
     def placeRandomTile(self):
         empty_tiles = [i for i,n in enumerate(self.grid) if n == 0]
         tile_value = 2 if random.random() < 0.9 else 4
-        self.grid[random.choice(empty_tiles)] = tile_value
+        if len(empty_tiles) > 0:
+            self.grid[random.choice(empty_tiles)] = tile_value
 
     def moveAndPlaceRandomTile(self, direction):
         self.move(direction)
@@ -55,6 +62,7 @@ class Game2048:
         self.move(direction)
         if current_grid == self.grid:
             return False
+        self.grid = current_grid
         return True
 
     def moveLeft(self):
@@ -89,13 +97,13 @@ class Game2048:
         """
         newGrid = []
         for i in range(4):
-            newGrid += grid[i*4:(i+1)*4][::-1]
+            newGrid += self.grid[i*4:(i+1)*4][::-1]
         self.grid = newGrid
 
     def slideRows(self):
         newGrid = []
         for i in range(4):
-            row = grid[i*4:(i+1)*4]
+            row = self.grid[i*4:(i+1)*4]
             newGrid += self.slide(row)
         self.grid = newGrid
 

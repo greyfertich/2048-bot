@@ -2,12 +2,12 @@ from PIL import ImageGrab, ImageOps
 import pyautogui
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
 from tiles import TILES, TILE_COORDINATES
-from gameboard import GameBoard
+from game import Game2048, GameState
 import time
 
 class GameClient:
     def __init__(self):
-        self.board = GameBoard()
+        self.game = Game2048()
         self.tiles = TILES
         self.gameOver = False
         self.initializeGame()
@@ -66,20 +66,25 @@ class BrowserClient(GameClient):
         """
         self.window = ImageGrab.grab()
 
+        newGrid = [0 for _ in range(16)]
+
         for index, coord in enumerate(TILE_COORDINATES):
             try:
-                self.board.setTile(index, self.getTileValue(coord))
+                newGrid[index] = self.getTileValue(coord)
+                state = GameState(newGrid, 0, self.gameOver)
+                self.game = Game2048(prev_state=state)
             except KeyError:
                 print(self.window.getpixel(coord))
                 self.gameOver = True
                 break
-        return self.board, self.gameOver
+        return self.game, self.gameOver
 
     def makeMove(self, direction):
+        #TODO: update score tracking in new game
         pyautogui.keyDown(KEYMAP[direction])
         time.sleep(0.01)
         pyautogui.keyUp(KEYMAP[direction])
-        self.updateScore(direction)
+        #self.updateScore(direction)
 
     def getTileValue(self, tileCoordinates):
         """
@@ -104,11 +109,10 @@ class LocalClient(GameClient):
     def __init__(self):
         super().__init__()
 
-    def initializeGame(self):
-        self.board.createNewGame()
-
     def getBoard(self):
-        return self.board, self.gameOver
+        return self.game, self.game.isGameOver()
 
     def makeMove(self, direction):
-        self.gameOver = self.board.move(direction)
+        self.game.moveAndPlaceRandomTile(direction)
+        self.gameOver = self.game.isGameOver()
+        print(self.game.printBoard())

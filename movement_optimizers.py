@@ -52,7 +52,7 @@ class ChainOptimizer(MovementOptimizerInterface):
     def __init__(self, game):
         super().__init__(game)
 
-    def getBestMove(self, depth=5, **kwargs):
+    def getBestMove(self, depth=4, **kwargs):
         move, score = self.nextMoveRecur(self.game, 0, depth)
         return move
 

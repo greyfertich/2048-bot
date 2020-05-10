@@ -115,4 +115,5 @@ class LocalClient(GameClient):
     def makeMove(self, direction):
         self.game.moveAndPlaceRandomTile(direction)
         self.gameOver = self.game.isGameOver()
-        print(self.game.printBoard())
+        print('Score: {}'.format(self.game.getScore()))
+        self.game.printBoard()

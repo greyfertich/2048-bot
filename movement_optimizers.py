@@ -53,7 +53,7 @@ class ChainOptimizer(MovementOptimizerInterface):
         super().__init__(game)
 
     def getBestMove(self, depth=5, **kwargs):
-        move, score = self.nextMoveRecur(self.game, depth, depth)
+        move, score = self.nextMoveRecur(self.game, 0, depth)
         return move
 
     def nextMoveRecur(self, game, depth, max_depth, base=0.9):
@@ -65,9 +65,9 @@ class ChainOptimizer(MovementOptimizerInterface):
             if (newGame.moveIsValid(move)):
                 newGame.move(move)
                 score = self.evaluate(newGame)
-                if depth != 0:
-                    my_move, my_score = self.nextMoveRecur(newGame, depth-1, max_depth)
-                    score += my_score*pow(base,max_depth-depth+1)
+                if depth <= max_depth:
+                    my_move, my_score = self.nextMoveRecur(newGame, depth+1, max_depth)
+                    score += my_score*pow(base, depth+1)
                 if score > bestScore:
                     bestMove = move
                     bestScore = score

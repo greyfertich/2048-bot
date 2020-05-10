@@ -22,7 +22,6 @@ class GameController:
         while not gameOver:
             time.sleep(moveDelay)
             gameOver = self.makeNextMove()
-        # print('Game over')
         return self.client.getBoard()[0].getGrid()
 
     def makeNextMove(self):

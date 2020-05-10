@@ -291,7 +291,7 @@ class ChainOptimizer(MovementOptimizerInterface):
         self.scoreboard = row1 + row2 + row3 + row4
 
 
-    def getBestMove(self, depth=3, **kwargs):
+    def getBestMove(self, depth=5, **kwargs):
         move, score = self.nextMoveRecur(self.grid, depth, depth)
         return move
     def nextMoveRecur(self, grid, depth, max_depth, base=0.9):

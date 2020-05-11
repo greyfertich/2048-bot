@@ -1,14 +1,13 @@
 from PIL import ImageGrab, ImageOps
 import pyautogui
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from tiles import TILES, TILE_COORDINATES, getTileFromColor
+from tiles import TILE_COORDINATES, getTileFromColor
 from game import Game2048, GameState
 import time
 
 class GameClient:
     def __init__(self):
         self.game = Game2048()
-        self.tiles = TILES
         self.gameOver = False
         self.initializeGame()
 
@@ -80,11 +79,9 @@ class BrowserClient(GameClient):
         return self.game, self.gameOver
 
     def makeMove(self, direction):
-        #TODO: update score tracking in new game
         pyautogui.keyDown(KEYMAP[direction])
         time.sleep(0.01)
         pyautogui.keyUp(KEYMAP[direction])
-        #self.updateScore(direction)
 
     def getTileValue(self, tileCoordinates):
         """
@@ -106,8 +103,9 @@ class BrowserClient(GameClient):
         return TILE_COORDINATES[0]
 
 class LocalClient(GameClient):
-    def __init__(self):
+    def __init__(self, display_board=True):
         super().__init__()
+        self.display_board = display_board
 
     def getBoard(self):
         return self.game, self.game.isGameOver()
@@ -115,5 +113,6 @@ class LocalClient(GameClient):
     def makeMove(self, direction):
         self.game.moveAndPlaceRandomTile(direction)
         self.gameOver = self.game.isGameOver()
-        print('Score: {}'.format(self.game.getScore()))
-        self.game.printBoard()
+        if self.display_board:
+            print('Score: {}'.format(self.game.getScore()))
+            self.game.printBoard()

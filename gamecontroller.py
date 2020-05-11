@@ -5,15 +5,16 @@ import time
 
 class GameController:
 
-    def __init__(self, gameplayMode='local', optimizer='montecarlo', n_games=10):
+    def __init__(self, gameplayMode='local', optimizer='expectimax', depth=1, display_board=True):
+        self.display_board = display_board
         self.client = self.getGameClient(gameplayMode)
-        self.bot = GameBot(optimizer, n_games=n_games)
+        self.bot = GameBot(optimizer, depth=depth)
 
     def getGameClient(self, gameplayMode):
         if gameplayMode == 'browser':
             return BrowserClient()
         elif gameplayMode == 'local':
-            return LocalClient()
+            return LocalClient(display_board=self.display_board)
         else:
             raise ValueError('Invalid gameplay mode "{}", must be "browser", or "local"'.format(gameplayMode))
 

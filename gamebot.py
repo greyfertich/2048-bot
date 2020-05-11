@@ -1,26 +1,22 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from movement_optimizers import ExpectimaxOptimizer, ChainOptimizer, RandomOptimizer, SingleMoveOptimizer
+from movement_optimizers import ExpectimaxOptimizer, ChainOptimizer
 
 class GameBot:
-    def __init__(self, optimizer='montecarlo', n_games=10):
+    def __init__(self, optimizer='montecarlo', depth=1):
         self.possibleMoves = (LEFT, RIGHT, UP, DOWN)
         self.optimization_type = optimizer
-        self.n_games = n_games
+        self.depth = depth
 
-    def getBestMove(self, game, n_games=10):
+    def getBestMove(self, game):
         """
         Checks all possible moves and returns the move with highest score
         """
         simulation = self.getOptimizer(game, type=self.optimization_type)
-        bestMove = simulation.getBestMove(n_games=self.n_games)
+        bestMove = simulation.getBestMove(depth=self.depth)
         return bestMove
 
-    def getOptimizer(self, game, type='chain'):
-        if type == 'random':
-            return RandomOptimizer(game)
-        elif type == 'single':
-            return SingleMoveOptimizer(game)
-        elif type == 'chain':
+    def getOptimizer(self, game, type='expectimax'):
+        if type == 'chain':
             return ChainOptimizer(game)
         elif type == 'expectimax':
             return ExpectimaxOptimizer(game)

@@ -1,7 +1,7 @@
 from PIL import ImageGrab, ImageOps
 import pyautogui
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from tiles import TILES, TILE_COORDINATES
+from tiles import TILES, TILE_COORDINATES, getTileFromColor
 from game import Game2048, GameState
 import time
 
@@ -96,7 +96,7 @@ class BrowserClient(GameClient):
         Returns:
         The integer value on the tile
         """
-        return self.tiles[self.window.getpixel(tileCoordinates)]
+        return getTileFromColor(self.window.getpixel(tileCoordinates))
 
     def getWindowCoordinates(self):
         """

@@ -3,16 +3,20 @@ import random
 
 class GameState:
     def __init__(self, grid, score, gameOver):
-        self.grid = grid
+        self.grid = grid.copy()
         self.score = score
         self.gameOver = gameOver
 
 class Game2048:
     def __init__(self, prev_state=None):
         if prev_state is None:
-            self.initializeGame()
+            self.grid = [0 for i in range(16)]
+            while self.grid.count(0) > 14:
+                self.placeRandomTile()
+            self.score = 0
+            self.gameOver = False
         else:
-            self.grid = list(prev_state.grid)
+            self.grid = prev_state.grid
             self.score = prev_state.score
             self.gameOver = prev_state.gameOver
 
@@ -30,18 +34,14 @@ class Game2048:
         self.gameOver = gameOver
         return self.gameOver
 
-    def initializeGame(self):
-        self.grid = [0 for i in range(16)]
-        while self.grid.count(0) > 14:
-            self.placeRandomTile()
-        self.score = 0
-        self.gameOver = False
-
     def placeRandomTile(self):
         empty_tiles = [i for i,n in enumerate(self.grid) if n == 0]
         tile_value = 2 if random.random() < 0.9 else 4
         if len(empty_tiles) > 0:
             self.grid[random.choice(empty_tiles)] = tile_value
+
+    def placeTile(self, index, value):
+        self.grid[index] = value
 
     def moveAndPlaceRandomTile(self, direction):
         self.move(direction, update_score=True)
@@ -131,6 +131,9 @@ class Game2048:
                     temp[i] = element
                     i += 1
         return temp, score_inc
+
+    def getEmptyTiles(self):
+        return [i for i,n in enumerate(self.grid) if n == 0]
 
     def printBoard(self):
         for i in range(16):

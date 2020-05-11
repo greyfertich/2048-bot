@@ -1,5 +1,5 @@
 from directions import LEFT, RIGHT, UP, DOWN, KEYMAP
-from movement_optimizers import ChainOptimizer, RandomOptimizer, SingleMoveOptimizer
+from movement_optimizers import ExpectimaxOptimizer, ChainOptimizer, RandomOptimizer, SingleMoveOptimizer
 
 class GameBot:
     def __init__(self, optimizer='montecarlo', n_games=10):
@@ -22,5 +22,7 @@ class GameBot:
             return SingleMoveOptimizer(game)
         elif type == 'chain':
             return ChainOptimizer(game)
+        elif type == 'expectimax':
+            return ExpectimaxOptimizer(game)
         else:
             return ValueError('Invalid optimizer type')

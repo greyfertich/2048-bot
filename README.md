@@ -17,11 +17,12 @@ python3 play2048.py --mode=browser
 ## Performance
 In its default configuration, the AI can achieve the 2048 tile __ percent of the time.
 Here are the proportions of games which ended with the specific tile as the highest value:
+```
 256: 2%
 512: 6%
 1024: 33%
 2048: 46%
 4096: 12%
-
+```
 ## Implementation
 My implementation uses the Expectimax algorithm which is used to maximize the chances of winning for a player assuming that the opponent does not play optimally. In the case of 2048, the player is the user playing the game and the opponent is the computer that randomly generates a tile of size 2 or 4 and places it on an empty spot on the board after ever move the user makes.

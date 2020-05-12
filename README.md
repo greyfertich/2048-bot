@@ -33,11 +33,14 @@ To decide which move to make, all 4 moves are simulated from the current board p
 
 ## Scoring
 In order to determine the score of any particular board, I used the heuristic that the highest tile should always be in the corner of the board and the rest of tiles should follow in a "snake" pattern in decreasing order.
+
 ![](images/heuristic.jpg)
 
 To do this I simply multiplied the board elementwise with a scoring table that is made up of 1/(2^0) ... 1/(2^15)
+
 ![](images/score.jpg)
+
 While this heuristic alone was good enough to beat the game 46% of time, the algorithm can be improved by looking at other factors as well such as number of empty blocks and number of blocks that can be merged.
 
 ## Acknowledgements
-A lot of inspiration for this method came from nneonneo's reponse to [this](https://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048) stack overflow posting on 2048
+Inspiration for this method came from nneonneo's reponse to [this](https://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048) stack overflow posting on 2048
